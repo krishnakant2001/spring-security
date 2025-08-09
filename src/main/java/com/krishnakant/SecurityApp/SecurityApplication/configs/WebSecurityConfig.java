@@ -22,34 +22,34 @@ public class WebSecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/posts").permitAll()
+                        .requestMatchers("/error", "/auth/**").permitAll()
                         .requestMatchers("/posts/**").hasAnyRole("ADMIN")
 //                        .requestMatchers("/posts/**").permitAll() #this is allow to go posts url without authentication
                         .anyRequest().authenticated())
-//                .csrf(csrfConfig -> csrfConfig.disable())
-//                .sessionManagement(sessionConfig -> sessionConfig
-//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(Customizer.withDefaults());
+                .csrf(csrfConfig -> csrfConfig.disable())
+                .sessionManagement(sessionConfig -> sessionConfig
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//                .formLogin(Customizer.withDefaults());
 
         return httpSecurity.build();
     }
 
-    @Bean
-    UserDetailsService myInMemoryUserDetailsService() {
-        UserDetails normalUser = User
-                .withUsername("striker")
-                .password(passwordEncoder().encode("1234"))
-                .roles("USER")
-                .build();
-
-        UserDetails adminUser = User
-                .withUsername("admin")
-                .password(passwordEncoder().encode("admin1234"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(normalUser, adminUser);
-    }
+//    @Bean
+//    UserDetailsService myInMemoryUserDetailsService() {
+//        UserDetails normalUser = User
+//                .withUsername("striker")
+//                .password(passwordEncoder().encode("1234"))
+//                .roles("USER")
+//                .build();
+//
+//        UserDetails adminUser = User
+//                .withUsername("admin")
+//                .password(passwordEncoder().encode("admin1234"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(normalUser, adminUser);
+//    }
 
     @Bean
     PasswordEncoder passwordEncoder(){
