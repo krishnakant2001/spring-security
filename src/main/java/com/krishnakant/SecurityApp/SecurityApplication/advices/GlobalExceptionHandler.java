@@ -1,6 +1,7 @@
 package com.krishnakant.SecurityApp.SecurityApplication.advices;
 
 import com.krishnakant.SecurityApp.SecurityApplication.exceptions.ResourceNotFoundException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -18,6 +19,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError> handleAuthenticationException(AuthenticationException ex){
+        ApiError apiError = new ApiError(ex.getLocalizedMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiError> handleAuthenticationException(JwtException ex){
         ApiError apiError = new ApiError(ex.getLocalizedMessage(), HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
