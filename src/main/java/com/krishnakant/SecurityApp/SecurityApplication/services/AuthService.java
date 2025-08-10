@@ -28,7 +28,7 @@ public class AuthService {
         return new LoginResponseDto(user.getId(), accessToken, refreshToken);
     }
 
-    public LoginResponseDto refreshToken(String refreshToken){
+    public LoginResponseDto refreshToken(String refreshToken) {
         Long userId = jwtService.getUserIdFromToken(refreshToken);
         User user = userService.getUserById(userId);
 

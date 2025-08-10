@@ -1,7 +1,9 @@
 package com.krishnakant.SecurityApp.SecurityApplication.configs;
 
 import com.krishnakant.SecurityApp.SecurityApplication.filters.JwtAuthFilter;
+import com.krishnakant.SecurityApp.SecurityApplication.handler.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,23 +25,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/error", "/auth/**").permitAll()
-//                        .requestMatchers("/posts/**").permitAll() #this is allow to go posts url without authentication
+                        .requestMatchers("/error", "/auth/**", "/home.html").permitAll()
                         .anyRequest().authenticated())
                 .csrf(csrfConfig -> csrfConfig.disable())
                 .sessionManagement(sessionConfig -> sessionConfig
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-//                .formLogin(Customizer.withDefaults());
-
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2Config -> oauth2Config
+                        .failureUrl("/login?error=true")
+                        .successHandler(oAuth2SuccessHandler)
+                );
+        log.info("security filter chain");
         return httpSecurity.build();
     }
 
