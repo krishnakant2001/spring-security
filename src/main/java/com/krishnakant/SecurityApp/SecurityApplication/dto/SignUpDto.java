@@ -1,5 +1,6 @@
 package com.krishnakant.SecurityApp.SecurityApplication.dto;
 
+import com.krishnakant.SecurityApp.SecurityApplication.entities.enums.Permission;
 import com.krishnakant.SecurityApp.SecurityApplication.entities.enums.Role;
 import lombok.Data;
 
@@ -13,4 +14,5 @@ public class SignUpDto {
 
     //demo purpose
     private Set<Role> roles;
+    private Set<Permission> permissions;
 }
